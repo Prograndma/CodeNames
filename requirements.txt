@@ -1,0 +1,6 @@
+# huggingface-hub==0.17.3
+# numpy==1.26.1
+# pandas==2.1.2
+# tokenizers==0.14.1
+# torch==2.1.0
+transformers==4.38.0
