@@ -12,99 +12,139 @@ class PlayGame:
         self.blue_words_guessed = 0
         self.reds_turn = bool(len(self.red_words) > len(self.blue_words))
 
-    def do_turn(self):
+    def get_board(self):
+        board = ""
+        board += "RED WORDS\n"
+        for word in self.red_words:
+            board += f"{word}\n"
+
+        board += "\nBLUE WORDS\n"
+        for word in self.blue_words:
+            board += f"{word}\n"
+
+        board += "\nTAN WORDS\n"
+        for word in self.other_words:
+            board += f"{word}\n"
+
+        board += "\nBLACK WORD\n"
+        board += f"{self.black_word}\n"
+        return board
+
+    def do_turn(self, quiet=False):
         if self.reds_turn:
-            print("RED TURN")
+            if not quiet:
+                print("RED TURN")
             self.reds_turn = not self.reds_turn
             _, _, _, words_that_it_wants_to_be_guessed, clue, _ = self.red_clue_giver.get_clue()
-            print(f"WORDS THAT RED WANTS TO BE GUESSED: {words_that_it_wants_to_be_guessed}")
-            print(f"THE HINT RED GAVE: {clue}")
-            # print(f"THE AMOUNT OF WORDS THAT SHOULD BE GUESSED: {len(words_that_it_wants_to_be_guessed)}")
+            if not quiet:
+                print(f"WORDS THAT RED WANTS TO BE GUESSED: {words_that_it_wants_to_be_guessed}")
+                print(f"THE HINT RED GAVE: {clue}")
 
             sorted_guesses = self.red_guesser.get_guess(clue, len(words_that_it_wants_to_be_guessed))
 
             for guess in sorted_guesses:
-                if len(self.red_words) == self.red_words_guessed - 1:
-                    print("ALL RED WORDS GUESSED!")
-                    print("RED WINS!!!")
-                    return False
+                if len(self.red_words) == self.red_words_guessed:
+                    if not quiet:
+                        print(f"Len of red_words: {len(self.red_words)}")
+                        print(f"amount of red_words guessed: {self.red_words_guessed}")
+                        print("ALL RED WORDS GUESSED!")
+                        print("RED WINS!!!")
+                    return False, "red", "all"
 
-                if len(self.blue_words) == self.blue_words_guessed - 1:
-                    print("ALL BLUE WORDS GUESSED!")
-                    print("BLUE WINS!!!")
-                    return False
+                if len(self.blue_words) == self.blue_words_guessed:
+                    if not quiet:
+                        print(f"Len of blue_words: {len(self.blue_words)}")
+                        print(f"amount of blue_words guessed: {self.blue_words_guessed}")
+                        print("ALL BLUE WORDS GUESSED!")
+                        print("BLUE WINS!!!")
+                    return False, "blue", "all"
 
                 if guess == self.black_word:
-                    print(f"RED GUESSED {guess} WHICH IS THE WORD THAT ENDS THE GAME")
-                    print("BLUE WINS!!!")
-                    return False
+                    if not quiet:
+                        print(f"RED GUESSED {guess} WHICH IS THE WORD THAT ENDS THE GAME")
+                        print("BLUE WINS!!!")
+                    return False, "blue", "black"
                 self.red_clue_giver.card_guessed(guess)
                 self.blue_clue_giver.card_guessed(guess)
                 self.red_guesser.card_guessed(guess)
                 self.blue_guesser.card_guessed(guess)
                 if guess in self.blue_words:
-                    print(f"RED GUESSED {guess} WHICH IS A BLUE WORD.")
-                    print("TURN OVER")
+                    if not quiet:
+                        print(f"RED GUESSED {guess} WHICH IS A BLUE WORD.")
+                        print("TURN OVER")
                     self.blue_words_guessed += 1
-                    return True
+                    return True, None, None
                 if guess in self.other_words:
-                    print(f"RED GUESSED {guess} WHICH IS A TAN WORD.")
-                    print("TURN OVER")
-                    return True
+                    if not quiet:
+                        print(f"RED GUESSED {guess} WHICH IS A TAN WORD.")
+                        print("TURN OVER")
+                    return True, None, None
                 self.red_words_guessed += 1
-                print(f"RED GUESSED {guess} WHICH IS A RED WORD.")
+                if not quiet:
+                    print(f"RED GUESSED {guess} WHICH IS A RED WORD.")
 
         else:
-            print("BLUE TURN")
+            if not quiet:
+                print("BLUE TURN")
             self.reds_turn = not self.reds_turn
             _, _, _, words_that_it_wants_to_be_guessed, clue, _ = self.blue_clue_giver.get_clue()
-            print(f"WORDS THAT BLUE WANTS TO BE GUESSED: {words_that_it_wants_to_be_guessed}")
-            print(f"THE HINT BLUE GAVE: {clue}")
-            print(f"THE AMOUNT OF WORDS THAT SHOULD BE GUESSED: {len(words_that_it_wants_to_be_guessed)}")
+            if not quiet:
+                print(f"WORDS THAT BLUE WANTS TO BE GUESSED: {words_that_it_wants_to_be_guessed}")
+                print(f"THE HINT BLUE GAVE: {clue}")
+                print(f"THE AMOUNT OF WORDS THAT SHOULD BE GUESSED: {len(words_that_it_wants_to_be_guessed)}")
 
             sorted_guesses = self.blue_guesser.get_guess(clue, len(words_that_it_wants_to_be_guessed))
 
             for guess in sorted_guesses:
-                if len(self.red_words) == self.red_words_guessed - 1:
-                    print("ALL RED WORDS GUESSED!")
-                    print("RED WINS!!!")
-                    return False
+                if len(self.red_words) == self.red_words_guessed:
+                    if not quiet:
+                        print("ALL RED WORDS GUESSED!")
+                        print("RED WINS!!!")
+                    return False, "red", "all"
 
-                if len(self.blue_words) == self.blue_words_guessed - 1:
-                    print("ALL BLUE WORDS GUESSED!")
-                    print("BLUE WINS!!!")
-                    return False
+                if len(self.blue_words) == self.blue_words_guessed:
+                    if not quiet:
+                        print("ALL BLUE WORDS GUESSED!")
+                        print("BLUE WINS!!!")
+                    return False, "blue", "all"
 
                 if guess == self.black_word:
-                    print(f"BLUE GUESSED {guess} WHICH IS THE WORD THAT ENDS THE GAME")
-                    print("RED WINS!!!")
-                    return False
+                    if not quiet:
+                        print(f"BLUE GUESSED {guess} WHICH IS THE WORD THAT ENDS THE GAME")
+                        print("RED WINS!!!")
+                    return False, "red", "black"
                 self.red_clue_giver.card_guessed(guess)
                 self.blue_clue_giver.card_guessed(guess)
                 self.red_guesser.card_guessed(guess)
                 self.blue_guesser.card_guessed(guess)
                 if guess in self.red_words:
-                    print(f"BLUE GUESSED {guess} WHICH IS A RED WORD.")
-                    print("TURN OVER")
+                    if not quiet:
+                        print(f"BLUE GUESSED {guess} WHICH IS A RED WORD.")
+                        print("TURN OVER")
                     self.red_words_guessed += 1
-                    return True
+                    return True, None, None
                 if guess in self.other_words:
-                    print(f"BLUE GUESSED {guess} WHICH IS A TAN WORD.")
-                    print("TURN OVER")
-                    return True
+                    if not quiet:
+                        print(f"BLUE GUESSED {guess} WHICH IS A TAN WORD.")
+                        print("TURN OVER")
+                    return True, None, None
                 self.blue_words_guessed += 1
-                print(f"BLUE GUESSED {guess} WHICH IS A BLUE WORD.")
+                if not quiet:
+                    print(f"BLUE GUESSED {guess} WHICH IS A BLUE WORD.")
 
-        if len(self.red_words) == self.red_words_guessed - 1:
-            print("ALL RED WORDS GUESSED!")
-            print("RED WINS!!!")
-            return False
+        if len(self.red_words) == self.red_words_guessed:
+            if not quiet:
+                print("ALL RED WORDS GUESSED!")
+                print("RED WINS!!!")
+            return False, "red", "all"
 
-        if len(self.blue_words) == self.blue_words_guessed - 1:
-            print("ALL BLUE WORDS GUESSED!")
-            print("BLUE WINS!!!")
-            return False
+        if len(self.blue_words) == self.blue_words_guessed:
+            if not quiet:
+                print("ALL BLUE WORDS GUESSED!")
+                print("BLUE WINS!!!")
+            return False, "blue", "all"
 
-        print("FINISHED TURN SUCCESSFULLY! CONGRATS")
-        print("TURN OVER")
-        return True
+        if not quiet:
+            print("FINISHED TURN SUCCESSFULLY! CONGRATS")
+            print("TURN OVER")
+        return True, None, None
