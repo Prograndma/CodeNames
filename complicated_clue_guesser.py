@@ -18,7 +18,7 @@ class ComplicatedClueGuesser:
         clue_index = self._get_clue_index(clue)
         best_permutation = []
         now = time.time()
-        print(f"Testing clue on {len(permutations)} different word combinations")
+        # print(f"Testing clue on {len(permutations)} different word combinations")
 
         for permutation in permutations:
             prompt = self._make_prompt(permutation)
@@ -28,7 +28,7 @@ class ComplicatedClueGuesser:
                 max_prob_for_clue = current_prob
                 best_permutation = permutation
 
-        print(f"Testing took {time.time() - now} seconds")
+        # print(f"Testing took {time.time() - now} seconds")
 
         sorted_best_permutation = self._get_word_probs(best_permutation, clue)
 
