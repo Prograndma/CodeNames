@@ -5,6 +5,7 @@ class Human:
         self.other_words = other_words
 
     def guess_is_good(self, guess):
+        guess = guess.lower()
         if guess in self.blue_words:
             return True
         elif guess in self.red_words:
@@ -26,7 +27,8 @@ class Human:
     def get_clue(self):
         print(f"BLUE WORDS: {self.blue_words}")
         print(f"RED WORDS: {self.red_words}")
-        print(f"OTHER WORDS: {self.other_words}")
+        print(f"OTHER WORDS: {self.other_words[:-1]}")
+        print(f"BLACK WORD: {self.other_words[-1]}")
         how_many = int(input("How many words do you want them to guess?\n"))
         while how_many <= 0 or how_many > 9:
             print("That is not a valid number")
