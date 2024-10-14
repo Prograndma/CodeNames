@@ -15,7 +15,7 @@ class SimpleClueGuesser:
         probs_given_clue = self._get_probabilities(self._make_prompt(clue))
         game_indices = self._get_game_ids()
         now = time.time()
-        print("Choosing words on just one permutation")
+        # print("Choosing words on just one permutation")
         game_probs = []
         for index in game_indices:
             game_probs.append(probs_given_clue[index])
